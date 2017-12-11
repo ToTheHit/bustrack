@@ -33,6 +33,7 @@ function World() {
         travels_count: 0,
         travels_distance: 0
     };
+    this.continue = true;
     this.initWorldTime();
     this.getSalaries();
     this.getBusInfo();
@@ -40,13 +41,13 @@ function World() {
     this.getNumOfWorkers();
     this.spawnBusses();
     this.onWorldCreated();
-    //this.moveBuses();
 }
 
 World.prototype.initWorldTime = function () {
     var time = getById("day-start").value.split(':');
     var stop_time = getById("day-end").value.split(':');
     if (isNaN(parseInt(time[0])) || isNaN(parseInt(time[1])) || isNaN(parseInt(stop_time[0])) || isNaN(parseInt(stop_time[1]))) {
+        this.continue = false;
         return showError('Заполните поле "Время работы маршрута"');
     }
     else {
@@ -63,45 +64,56 @@ World.prototype.initWorldTime = function () {
 
 World.prototype.getBusInfo = function () {
     var self = this;
-    self.bus.bus_count=parseInt(getById("bus_count").innerHTML);
-    self.bus.interval=parseInt(getById("interval").innerHTML);
-    self.bus.seats=parseInt(getById("seats").innerHTML);
-    self.bus.price=parseInt(getById("price").innerHTML);
+    if (self.continue) {
+        self.bus.bus_count = parseInt(getById("bus_count").innerHTML);
+        self.bus.interval = parseInt(getById("interval").innerHTML);
+        self.bus.seats = parseInt(getById("seats").innerHTML);
+        self.bus.price = parseInt(getById("price").innerHTML);
+    }
 };
 
 World.prototype.getNumOfWorkers = function () {
     var self = this;
-    self.workers.drivers=parseInt(getById("number_of_drivers").innerHTML);
-    self.workers.conductors=parseInt(getById("number_of_conductors").innerHTML);
+    if (self.continue) {
+        self.workers.drivers = parseInt(getById("number_of_drivers").innerHTML);
+        self.workers.conductors = parseInt(getById("number_of_conductors").innerHTML);
+    }
 };
 
 World.prototype.getSalaries = function () {
     var self = this;
-    self.salary.driver = (parseInt(getById("driver_salary").innerHTML) / 30) * 1000;
-    self.salary.conductor = (parseInt(getById("conductor_salary").innerHTML) / 30) * 1000;
+    if (self.continue) {
+        self.salary.driver = (parseInt(getById("driver_salary").innerHTML) / 30) * 1000;
+        self.salary.conductor = (parseInt(getById("conductor_salary").innerHTML) / 30) * 1000;
+    }
 };
 
 World.prototype.getStops = function () {
     var self = this;
-    self.stops = self.stops.concat(map.getStops());
-    if (self.stops.length <= 2) {
-        return showError("Ваш маршрут должен содержать не менее 3 остановок");
+    if (self.continue) {
+        self.stops = self.stops.concat(map.getStops());
+        if (self.stops.length <= 2) {
+            self.continue = false;
+            return showError("Ваш маршрут должен содержать не менее 3 остановок");
+        }
     }
-    console.log(self.stops);
 };
 
 World.prototype.spawnBusses = function () {
-    for (var i = 0; i < this.bus.bus_count; i++) {
-        this.deployBus();
+    if (this.continue) {
+        for (var i = 0; i < this.bus.bus_count; i++) {
+            this.deployBus();
+        }
     }
-    console.log(this.buses);
 };
 
 World.prototype.deployBus = function () {
     var self = this;
-    var start_stop = self.stops[0];
-    var bus = new Bus(self.bus.seats, self.time, start_stop);
-    self.buses.push(bus);
+    if (self.continue) {
+        var start_stop = self.stops[0];
+        var bus = new Bus(self.bus.seats, self.time, start_stop);
+        self.buses.push(bus);
+    }
 };
 
 
@@ -110,39 +122,43 @@ World.prototype.onWorldCreated = function () {
 };
 
 World.prototype.getTravelTime = function () {
-    var dist_time = map.getRoadDuration();
-    var interval_time = this.bus.interval * 60;
-    var stops_time = this.stops.length * 15;
-    console.log(this);
-    this.routeInfo.travel_time = dist_time*2 + stops_time*2 + interval_time;
-    this.routeInfo.travels_count = parseInt(this.worktime / this.routeInfo.travel_time);
-    this.routeInfo.travels_distance = this.routeInfo.travels_count * (map.getRoadDistance() * 2);
-    this.routeInfo.gasoline = ((this.routeInfo.travels_distance/1000) / 100) * this.bus.fuel_cons;
-    this.routeInfo.gasoline_cost = this.routeInfo.gasoline * this.fuel_cost;
-    this.routeInfo.driver_salary = this.salary.driver;
-    this.routeInfo.conductor_salary = this.salary.conductor;
-    this.routeInfo.expenses = (this.salary.conductor * this.workers.conductors) + (this.salary.driver * this.workers.drivers) + (this.routeInfo.gasoline_cost * this.bus.bus_count);
-
-
-    // Passengers
-    var aver_pass = 3;
-    var aver_in = 0;
-    if (this.bus.price <= 20) {
-        aver_in = aver_pass * this.stops.length * 2 * (1 + (20 - this.bus.price) * 0.05);
-        if (aver_in <=0) {
-            aver_in=0
+    if (this.continue) {
+        var dist_time = map.getRoadDuration();
+        var interval_time = this.bus.interval * 60;
+        var stops_time = this.stops.length * 15;
+        this.routeInfo.travel_time = dist_time * 2 + stops_time * 2 + interval_time;
+        if (this.worktime < this.routeInfo.travel_time) {
+            this.continue = false;
+            return showError('Длительность маршрута не может быть больше, чем рабочий день')
         }
-    } else {
-        var koeff = 1 - ((this.bus.price - 20) * 0.05);
-        aver_in = aver_pass * this.stops.length * 2 * koeff;
-        if (aver_in <=0) {
-            aver_in=0
+        else {
+            this.routeInfo.travels_count = parseInt(this.worktime / this.routeInfo.travel_time);
+            this.routeInfo.travels_distance = this.routeInfo.travels_count * (map.getRoadDistance() * 2);
+            this.routeInfo.gasoline = ((this.routeInfo.travels_distance / 1000) / 100) * this.bus.fuel_cons;
+            this.routeInfo.gasoline_cost = this.routeInfo.gasoline * this.fuel_cost;
+            this.routeInfo.driver_salary = this.salary.driver;
+            this.routeInfo.conductor_salary = this.salary.conductor;
+            this.routeInfo.expenses = (this.salary.conductor * this.workers.conductors) + (this.salary.driver * this.workers.drivers) + (this.routeInfo.gasoline_cost * this.bus.bus_count);
+
+
+            // Passengers
+            var aver_pass = 3;
+            var aver_in = 0;
+            if (this.bus.price <= 20) {
+                aver_in = aver_pass * this.stops.length * 2 * (1 + (20 - this.bus.price) * 0.05);
+                if (aver_in <= 0) {
+                    aver_in = 0
+                }
+            } else {
+                var koeff = 1 - ((this.bus.price - 20) * 0.05);
+                aver_in = aver_pass * this.stops.length * 2 * koeff;
+                if (aver_in <= 0) {
+                    aver_in = 0
+                }
+            }
+            this.routeInfo.income = aver_in * parseInt(this.routeInfo.travels_count) * ((((this.routeInfo.travel_time - interval_time) / interval_time) < this.bus.bus_count) ? ((this.routeInfo.travel_time - interval_time) / interval_time) : this.bus.bus_count) * this.bus.price;
+            this.routeInfo.profit = this.routeInfo.income - this.routeInfo.expenses;
+            showModelModal(this.routeInfo);
         }
     }
-    console.log(aver_in * this.routeInfo.travels_count);
-    this.routeInfo.income = aver_in * parseInt(this.routeInfo.travels_count) * ((((this.routeInfo.travel_time-interval_time)/interval_time) < this.bus.bus_count) ? ((this.routeInfo.travel_time-interval_time)/interval_time) : this.bus.bus_count) * this.bus.price;
-    this.routeInfo.profit = this.routeInfo.income - this.routeInfo.expenses;
-    console.log(this.routeInfo);
-    showModelModal(this.routeInfo);
-
 };
