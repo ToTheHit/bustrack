@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0">
+    <title>Создание маршрута</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" href="css/animate.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript" src="js/ui.api.js"></script>
+    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="js/Bus.js"></script>
+    <script type="text/javascript" src="js/World.js"></script>
+</head>
+<body onload="init()">
+<div id="error-box">
+    <p id="err-text">Динамический текст ошибки.</p>
+</div>
+<div id="map-info" class="paper top-right">
+    <i class="material-icons map-info-icn">explore</i>
+    <div class="map-info-tab"><span id="track-distance">0 м.</span></div>
+    <i class="material-icons map-info-icn">timer</i>
+    <div class="map-info-tab"><span id="track-duration">0 ч. 0 мин. 0 сек.</span></div>
+</div>
+<div id="left-main">
+    <section>
+        <h3 class="main-title">Создание маршрута</h3>
+        <p class="main-description">Нажмите на любую остановку в городе, чтобы начать построение маршрута.</p>
+    </section>
+    <section>
+        <h3 class="main-title">Список остановок</h3>
+        <div id="stops-list">
+            <p class="main-description">На данный момент не выбрано ни одной остановки.</p>
+        </div>
+        <div id="delete-last-stop">Удалить последнюю</div>
+    </section>
+    <section class="noselect">
+        <h3 class="main-title">Параметры рейса</h3>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Количество автобусов</p>
+                <span id="bus_count">5</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-min="5"></div>
+            </div>
+        </div>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Интервал рейсов (мин)</p>
+                <span id="interval">5</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-max="90" data-min="5"></div>
+            </div>
+        </div>
+        <div class="slider" style="display: none">
+            <div class="slider-info">
+                <p>Мест в автобусе</p>
+                <span id="seats">25</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-max="60" data-min="10"></div>
+            </div>
+        </div>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Цена билета (руб)</p>
+                <span id="price">15</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-max="70" data-min="15"></div>
+            </div>
+        </div>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Зарплата водителя (тыс. руб)</p>
+                <span id="driver_salary">30</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-min="10"></div>
+            </div>
+        </div>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Количество водителей</p>
+                <span id="number_of_drivers">10</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-min="5"></div>
+            </div>
+        </div>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Зарплата кондуктора</p>
+                <span id="conductor_salary">15</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-min="10"></div>
+            </div>
+        </div>
+        <div class="slider">
+            <div class="slider-info">
+                <p>Количество кондукторов</p>
+                <span id="number_of_conductors">5</span>
+            </div>
+            <div class="slider-line">
+                <div class="slider-draggable" data-min="0"></div>
+            </div>
+        </div>
+        <div class="text-fill">
+            <div class="text-fill-title">Время работы маршрута</div>
+            <input id="day-start" class="text-fill-input" type="time" /> <span style="font-size: 12px;">до</span>
+            <input id="day-end"  class="text-fill-input" type="time" />
+        </div>
+        <div id="compose-track" onclick="world = new World()">Рассчитать маршрут</div>
+    </section>
+</div>
+<div id="google-map"></div>
+<div id="loader-box">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="6" stroke-miterlimit="10"/>
+        </svg>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="js/map.api.js"></script>
+<script>
+    var map;
+    var world;
+    function initMap() {
+        map = new GoogleMap();
+        map.initMap();
+        getById('delete-last-stop').onclick = function () {
+            map.deleteLastPoint();
+        }
+    }
+    function console1(){
+        console.log(map);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0KkX-IIdCzydf9aHdOo9nVtyXDZKnmZs&libraries=places&callback=initMap"
+        async defer></script>
+</html>
