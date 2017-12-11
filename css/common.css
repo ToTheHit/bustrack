@@ -223,7 +223,7 @@ SLIDER
     width: 70px;
 }
 
-#compose-track {
+#compose-track, #review-button {
     padding: 12px;
     background: #4CAF50;
     color: #ffffff;
@@ -239,6 +239,21 @@ SLIDER
     cursor: pointer;
     background: rgba(67,160,71 ,1);
 }
+
+#review-button {
+    position: absolute;
+    bottom: 0;
+    width: 166px;
+    background: #cbf2d1;
+    color: #4caf50;
+}
+
+#review-button:hover {
+    cursor: pointer;
+    background: rgba(177, 237, 186, 1);
+}
+
+
 
 
 /**
