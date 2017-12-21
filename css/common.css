@@ -20,7 +20,7 @@ section {
 
 #left-main {
     position: fixed;
-    width: 220px;
+    width: 270px;
     height: 100%;
     background: #ffffff;
     -webkit-box-shadow:  2px 0 4px rgba(33,33,33 ,0.2);
@@ -161,8 +161,14 @@ section {
 /**
 SLIDER
  */
-.slider, .text-fill {
+.slider {
     margin: 15px 0;
+    padding: 0 15px;
+}
+
+.text-fill {
+    margin-top: 15px;
+    margin-bottom: 5px;
     padding: 0 15px;
 }
 
@@ -221,6 +227,7 @@ SLIDER
     padding: 5px;
     border-radius: 3px;
     width: 70px;
+    margin-top: 5px;
 }
 
 #compose-track, #review-button {
@@ -231,6 +238,7 @@ SLIDER
     font-weight: 700;
     text-transform: uppercase;
     margin: 0 15px 20px;
+    margin-top: 5px;
     border-radius: 3px;
     text-align: center;
 }
@@ -241,9 +249,8 @@ SLIDER
 }
 
 #review-button {
-    position: absolute;
     bottom: 0;
-    width: 166px;
+    width: 216px;
     background: #cbf2d1;
     color: #4caf50;
 }
@@ -253,8 +260,31 @@ SLIDER
     background: rgba(177, 237, 186, 1);
 }
 
+#day-people {
+    width: 20px;
+}
 
+#add-timing {
+    color: #4caf50;
+    font-size: 36px;
+    display: flex;
+    justify-content: center;
+}
 
+#add-timing:hover {
+    cursor: pointer;
+    color: rgba(67,160,71 ,1);
+}
+
+#time-pass-help {
+    color: #4caf50;
+    font-size: 16px;
+}
+
+#time-pass-help:hover {
+    cursor: pointer;
+    color: rgba(67,160,71 ,1);
+}
 
 /**
 LOADER ANIMATION

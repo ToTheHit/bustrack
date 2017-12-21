@@ -309,6 +309,36 @@ function getById(id) {
     return document.getElementById(id);
 }
 
+function addMoreTimings() {
+    var section = document.getElementsByClassName("text-fill")[0];
+    var start = document.createElement("input");
+    var text = document.createElement("span");
+    var end = document.createElement("input");
+    var people = document.createElement("input");
+    start.setAttribute("id", "day-start");
+    start.className="text-fill-input";
+    start.setAttribute("type","time");
+    section.appendChild(start);
+
+    text.setAttribute("style", "font-size: 12px; margin-left: 5px");
+    text.innerHTML += "до";
+    section.appendChild(text);
+
+    end.setAttribute("id", "day-end");
+    end.className="text-fill-input end";
+    end.setAttribute("type","time");
+    end.setAttribute("style", "margin-left: 3px");
+    section.appendChild(end);
+
+    people.setAttribute("id", "day-people");
+    people.className="text-fill-input people";
+    people.setAttribute("style", "margin-left: 4px;");
+    section.appendChild(people);
+    /*section.innerHTML += '<input id="day-start" class="text-fill-input" type="time" /> <span style="font-size: 12px;">до</span>';
+    section.innerHTML += ' <input id="day-end"  class="text-fill-input" type="time" />';
+    section.innerHTML += '<input id="day-people" class="text-fill-input" style="margin-left: 4px;" />';*/
+}
+
 window.onmousedown = function (event) {
     dragStart(event);
 };

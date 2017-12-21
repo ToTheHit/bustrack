@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0">
     <title>Создание маршрута</title>
-    <link rel="stylesheet" type="text/css" href="css/common.css" />
-    <link rel="stylesheet" href="css/animate.css" />
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
+    <link rel="stylesheet" href="css/animate.css"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script type="text/javascript" src="js/ui.api.js"></script>
     <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
@@ -109,10 +109,14 @@
             </div>
         </div>
         <div class="text-fill">
-            <div class="text-fill-title">Время работы маршрута</div>
-            <input id="day-start" class="text-fill-input" type="time" /> <span style="font-size: 12px;">до</span>
-            <input id="day-end"  class="text-fill-input" type="time" />
+            <div class="text-fill-title">Время работы маршрута и пассажиропоток <i id="time-pass-help" class="material-icons" onclick='showModal("Укажите время работы вашего маршрута и среднее количество пассажиров на одной остановке в это время."
+                    + "<br><br> При необходимости, Вы можете разбить маршрут на несколько временных отрезков, каждый из которых будет иметь собственное количество пассажиров."
+                    + "<br><br> Если Вы не укажете среднее количество пассажиров, то расчет будет произведен исходя из стандартных значений.")'>&#xE887;</i></div>
+            <input id="day-start" class="text-fill-input" type="time"/> <span style="font-size: 12px;">до</span>
+            <input id="day-end" class="text-fill-input end" type="time"/>
+            <input id="day-people" class="text-fill-input people"/>
         </div>
+        <i id="add-timing" class="material-icons" onclick="addMoreTimings()">add_circle</i>
         <div id="compose-track" onclick="world = new World()">Рассчитать маршрут</div>
         <div id="review-button" onclick="window.open('https://goo.gl/forms/heJThD4a7iAIsxhK2')">Оставить отзыв</div>
     </section>
@@ -137,7 +141,7 @@
             map.deleteLastPoint();
         }
     }
-    function console1(){
+    function console1() {
         console.log(map);
     }
 </script>

@@ -40,12 +40,14 @@ function World() {
     this.getStops();
     this.getNumOfWorkers();
     this.spawnBusses();
+    this.getFullAveragePassengers();
     this.onWorldCreated();
 }
 
 World.prototype.initWorldTime = function () {
     var time = getById("day-start").value.split(':');
-    var stop_time = getById("day-end").value.split(':');
+    //var stop_time = getById("day-end").value.split(':');
+    var stop_time = document.getElementsByClassName("end")[document.getElementsByClassName("end").length-1].value.split(':');
     if (isNaN(parseInt(time[0])) || isNaN(parseInt(time[1])) || isNaN(parseInt(stop_time[0])) || isNaN(parseInt(stop_time[1]))) {
         this.continue = false;
         return showError('Заполните поле "Время работы маршрута"');
@@ -116,6 +118,21 @@ World.prototype.deployBus = function () {
     }
 };
 
+World.prototype.getFullAveragePassengers = function () {
+    var pass = document.getElementsByClassName("people");
+    var values = [];
+    for (var i = 0; i<pass.length; i++) {
+        if (pass[i].value === "") {
+            values.push(3);
+        }
+        else {
+            values.push(parseInt(pass[i].value));
+        }
+    }
+    return values.reduce(function(a, b) {
+        return a + b;
+    })/values.length;
+};
 
 World.prototype.onWorldCreated = function () {
     this.getTravelTime();
@@ -142,7 +159,7 @@ World.prototype.getTravelTime = function () {
 
 
             // Passengers
-            var aver_pass = 3;
+            var aver_pass = this.getFullAveragePassengers();
             var aver_in = 0;
             if (this.bus.price <= 20) {
                 aver_in = aver_pass * this.stops.length * 2 * (1 + (20 - this.bus.price) * 0.05);
